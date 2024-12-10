@@ -1,6 +1,6 @@
 from collections import Counter
 
-inputFile = open("input.txt", "r")
+inputFile = open("input1.txt", "r")
 lines = inputFile.read().strip().split("\n")
 inputFile.close()
 
