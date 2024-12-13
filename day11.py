@@ -50,7 +50,7 @@ def part1():
     print()
     print("All Stones count", len(line))
 
-def getStones(numberin,loops, lenNewline,myStore):
+def getStones(numberin,loops,myStore):
 
 
     if loops == 0:
@@ -62,17 +62,16 @@ def getStones(numberin,loops, lenNewline,myStore):
     lenStr = len(strNumber)
     if (numberin, loops) in myStore:
         lenNewline= myStore[(numberin, loops)]
-        return lenNewline
     elif number == 0:
-        lenNewline = getStones(1,loops-1, lenNewline,myStore)
+        lenNewline = getStones(1,loops-1,myStore)
     elif lenStr % 2 == 0:
         first = int(strNumber[:lenStr // 2])
         second = int(strNumber[lenStr // 2:])
-        lenNewline=getStones(first,loops-1, lenNewline,myStore)
-        lenNewline+= getStones(second,loops-1, lenNewline,myStore)
+        lenNewline=getStones(first,loops-1,myStore)
+        lenNewline+= getStones(second,loops-1,myStore)
     else:
         numb = number * 2024
-        lenNewline= getStones(numb,loops-1, lenNewline,myStore)
+        lenNewline= getStones(numb,loops-1,myStore)
 
     print(f'\r loop {loops} and number {numberin} and length {lenNewline} ', end="")
     myStore[(numberin, loops)] = lenNewline
@@ -85,7 +84,8 @@ def part2():
     singlesNumber = 0
     mystore = {}
     for singleNumber in line:
-        singlesNumber += getStones(singleNumber,75,0,mystore)
+        singlesNumber += getStones(singleNumber,75,mystore)
+        print ( " and store count " ,mystore.__len__())
     print(f"\nAll stones count",singlesNumber)
 
 startt = time.time()
