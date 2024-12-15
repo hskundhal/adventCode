@@ -65,7 +65,7 @@ def part1():
     print("total price ",priceRegion)
 
 def part2():
-    gardenPlots = open('input.txt').read().splitlines()
+    gardenPlots = open('input12.txt').read().splitlines()
     sameplotdict = {}
     for x,gardenPlotRow in enumerate(gardenPlots):
         for y,gardenPlot in enumerate(gardenPlotRow):
@@ -100,8 +100,7 @@ def part2():
 
 
         return values,region,sidematchforPerimeter
-    # # In the first example, region A has price 4 * 10 = 40, region B has price 4 * 8 = 32, region C has price 4 * 10 = 40, region D has price 1 * 4 = 4, and region E has price 3 * 8 = 24. So, the total price for the first example is 140
-    priceRegion = 0
+
     for key,values in sameplotdict.items():
         itemall = list(values)
         while values:
@@ -110,52 +109,72 @@ def part2():
             region.append(value)
             values,region,perm = findMatchingplots(value,values,region,4,itemall)
             # print(key, len(region),perm)
-            priceRegion += len(region) * perm
             topGarden.append([key,region])
-    print("total price ",priceRegion)
+    pricePart2 = 0
     for k,region in topGarden:
         region.sort()
         start  = 0
         sides = set()
+        corners = set()
+        corner = 0
         notsides = set()
         startQ = deque(region)
         # each = startQ.popleft()
         while startQ:
             each = startQ.popleft()
-            for dr, dc in [(0, 1), (1, 0), (-1, 0), (0, -1)]:
-                each3 = [each[0] + dr, each[1] + dc]
-                if each3 in region :
-                    # if each3 in startQ:
-                        # startQ.remove(each3)
-                    # if dr == 0:
-                    #     sides.add((each[0],0))
-                    # elif dc == 0:
-                    #     sides.add((0,each[1]))
-                    continue
-                else:
-                    start += 1
-                    sides.add((each3[0], each3[1]))
+            eachup = [each[0] - 1,    each[1]]
+            eachleft = [each[0],          each[1] - 1]
+            eachdown = [each[0] + 1,   each[1]]
+            eachright   = [each[0],      each[1] + 1]
+            eachleftdown = [each[0] + 1, each[1] - 1]
+            eachleftup = [each[0] - 1, each[1] - 1]
+            eachrightup = [each[0] - 1, each[1] + 1]
+            eachrightdown = [each[0] + 1, each[1] + 1]
+            # outside corners
+            if (eachleft not in region and eachup not in region):
+                corner += 1
+                # corners.add((tuple(eachleft), tuple(eachup), tuple(each)))
+            if (eachleft not in region and eachdown not in region):
+                corner += 1
+                # corners.add((tuple(eachleft), tuple(eachdown), tuple(each)))
+            if (eachright not in region and eachup not in region):
+                corner += 1
+                # corners.add((tuple(eachright), tuple(eachup), tuple(each)))
+            if (eachright not in region and eachdown not in region):
+                corner += 1
+                # corners.add((tuple(eachright), tuple(eachdown), tuple(each)))
+        #     inside corners
+
+            if (each in region) and (eachleft in region) and (eachdown in region) and (eachleftdown not in region):
+                corner += 1
+                corners.add((tuple(eachleft), tuple(eachdown), tuple(each)))
+            if (each in region) and (eachleft in region) and (eachup in region) and (eachleftup not in region):
+                corner += 1
+                corners.add((tuple(eachleft), tuple(eachup), tuple(each)))
+            if (each in region) and (eachright in region) and (eachdown in region) and (eachrightdown not in region):
+                corner += 1
+                corners.add((tuple(eachright), tuple(eachdown), tuple(each)))
+            if (each in region) and (eachright in region) and (eachup in region) and (eachrightup not in region):
+                corner += 1
+                corners.add((tuple(eachright), tuple(eachup), tuple(each)))
 
 
-        print(k,len(region), len(sides), len(notsides))
-        print(sides)
+        # print(k,"area =",len(region), "side=" , corner)
+        # print(corners)
+        pricePart2 += len(region) * corner
+    print("total price ", pricePart2)
 
+# AAAA
+# BBCD
+# BBCC
+# EEEC
+# The region containing type A plants has 4 sides, as does each of the regions containing plants of type B, D, and E.
+# However, the more complex region containing the plants of type C has 8 sides!
 
-# A region of R  10 = 120.
-# A region of I  4 = 16.
-# A region of I  16 = 224
-# A region of C  22 = 308.
-# A region of F plants with price 10 * 12 = 120.
-# A region of V plants with price 13 * 10 = 130.
-# A region of J plants with price 11 * 12 = 132.
-# A region of C plants with price 1 * 4 = 4.
-# A region of E plants with price 13 * 8 = 104.
-
-# A region of M plants with price 5 * 6 = 30.
-# A region of S plants with price 3 * 6 = 18.
 startime = time.time()
 part1()
 print(f' Time taken {int(time.time()-startime)}s')
-# startime = time.time()
-# part2()
+startime = time.time()
+part2()
+print(f' Time taken {int(time.time()-startime)}s')
 
