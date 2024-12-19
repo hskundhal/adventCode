@@ -79,15 +79,12 @@ def part2():
             if key == 'Prize':
                 xprize = valuesplit[0].split('=')
                 yprize = valuesplit[1].split('=')
-                newX = int(xprize[1])+10000000000000
-                newY = int(yprize[1])+10000000000000
-                winnerPlatter.append([newX, newY])
+                winnerPlatter.append([xprize[1], yprize[1]])
                 allitems.append(winnerPlatter)
                 winnerPlatter = []
+
             else:
                 winnerPlatter.append([xadditions[1], yadditions[1]])
-
-    print(allitems)
 
     totalCost = 0
     totalitems = len(allitems)
@@ -105,19 +102,9 @@ def part2():
             else:
                 x3 = int(item[i][0])
                 y3 = int(item[i][1])
-        lcmXAxis = math.lcm(x1, x2)
-        lcmYAxis = math.lcm(y1, y2)
-        skip = False
-        jSkip = 0
-        # it costs 3 tokens to push the A button and 1 token to push the B button.
-        if x2 *3 < x1 and y2*3 < y1:
-            skip = True
-            jSkip = min(x3//x2,y3//y2)-max(lcmXAxis//x2,lcmYAxis//y2)
-        for j in range(max(x3 // x2, y3 // y2)):
-            if skip:
-                j = jSkip
-            for i in range(max(x3 // x1, y3 // y1)):
 
+        for i in range(max(x3 // x1, y3 // y1)):
+            for j in range(max(x3 // x2, y3 // y2)):
                 if x1 * i + x2 * j == x3 and y1 * i + y2 * j == y3:
                     priceIteration = i * 3 + j * 1
                     if priceIteration < price:

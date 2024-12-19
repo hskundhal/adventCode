@@ -1,6 +1,6 @@
 from collections import deque
 
-inputfile  = open('input.txt').read().splitlines()
+inputfile  = open('input15.txt').read().splitlines()
 
 def part1():
     grid = [list(line) for line in inputfile]
@@ -135,192 +135,204 @@ def part2():
 
     for line in ScaledGraphs:
         print("".join(line))
-    grid = [list(line) for line in ScaledGraphs]
+    G = [list(l) for l in ScaledGraphs]
+    spx = startpos[0]
+    spy = startpos[1]
     for dir in directions:
+        num = 0
+        # for l in G:
+        #     print(f'{num}',end="")
+        #     num += 1
+        #     print("".join(l))
+        # print("startpos and next direction", spx, dir)
+        # if spx == 15 and spy == 52:
+        #     print("here")
 
-        for line in grid:
-            print("".join(line))
-        print("startpos", startpos, dir)
-        if startpos[0] == 7 and startpos[1] == 11:
-            print("catch")
-        grid[startpos[0]][startpos[1]] = '.'
-        if dir == '<' and [startpos[0], (startpos[1]) - 1]  not in boundary:
-            if grid[startpos[0]][startpos[1] - 1] == '.':
-                print("move left")
-                startpos = [startpos[0], (startpos[1]) - 1]
-                grid[startpos[0]][startpos[1]] = '@'
-                grid[startpos[0]][startpos[1]+ 1] = '.'
-            elif grid[startpos[0]][startpos[1] - 1] == ']':
-                for i in range(startpos[1] - 1, 0, -1):
-                    if grid[startpos[0]][i] == '#':
+        G[spx][spy] = '.'
+
+        if dir == '<' and [spx, spy - 1]  not in boundary:
+            if G[spx][spy - 1] == '.':
+                spx,spy = spx, spy - 1
+                G[spx][spy] = '@'
+                G[spx][spy+ 1] = '.'
+            elif G[spx][spy - 1] == ']':
+                for i in range(spy - 1, 0, -1):
+                    if G[spx][i] == '#':
                         break
-                    if grid[startpos[0]][i] == '.' :
-                        print("yo yo left", i, i-1, (startpos[0], startpos[1] ))
-                        for j in range(i,startpos[1]-1):
-                            if grid[startpos[0]][j+1] != '@' or grid[startpos[0]][j+1] != '.':
-                                grid[startpos[0]][j] = grid[startpos[0]][j+1]
-
-
-
-                        startpos = (startpos[0], (startpos[1] - 1))
-                        grid[startpos[0]][startpos[1]] = '@'
-                        grid[startpos[0]][startpos[1]+1] = '.'
+                    if G[spx][i] == '.' :
+                        for j in range(i,spy-1):
+                            if G[spx][j+1] != '@' or G[spx][j+1] != '.':
+                                G[spx][j] = G[spx][j+1]
+                        spx,spy = spx, spy - 1
+                        G[spx][spy] = '@'
+                        G[spx][spy+1] = '.'
+                        break
+        elif dir == '>' and [spx, (spy) + 1] not in boundary :
+            if G[spx][spy + 1] == '.' :
+                spx,spy = spx, spy + 1
+                G[spx][spy] = '@'
+                G[spx][spy -1] = '.'
+            elif G[spx][spy + 1] == '[':
+                for i in range(spy + 1, len(G[0])):
+                    if G[spx][i] == '#' :
+                        break
+                    if G[spx][i] == '.':
+                        for j in range(i,spy+1,-1):
+                            G[spx][j] = G[spx][j-1]
+                        spx,spy = spx, spy + 1
+                        G[spx][spy] = '@'
+                        G[spx][spy - 1] = '.'
                         break
 
-
-        elif dir == '>' and [startpos[0], (startpos[1]) + 1] not in boundary :
-            if grid[startpos[0]][startpos[1] + 1] == '.' :
-                print("move right")
-                startpos = [startpos[0], (startpos[1]) + 1]
-                grid[startpos[0]][startpos[1]] = '@'
-                grid[startpos[0]][startpos[1] -1] = '.'
-            elif grid[startpos[0]][startpos[1] + 1] == '[':
-                for i in range(startpos[1] + 1, len(grid[0])):
-                    if grid[startpos[0]][i] == '#' :
-                        break
-                    if grid[startpos[0]][i] == '.':
-                        print(" yo yo right1", i,i+1, (startpos[0], startpos[1]))
-                        for j in range(i,startpos[1]+1,-1):
-
-                            grid[startpos[0]][j] = grid[startpos[0]][j-1]
-
-                        startpos = (startpos[0], (startpos[1] + 1))
-                        grid[startpos[0]][startpos[1]] = '@'
-                        grid[startpos[0]][startpos[1] - 1] = '.'
-                        break
-        elif dir == '^' and [(startpos[0]) - 1, startpos[1]] not in boundary:
-            if grid[startpos[0] - 1][startpos[1]] == '.':
-                print("moving up")
-                startpos = (startpos[0] - 1, startpos[1])
-                grid[startpos[0]][startpos[1]] = '@'
-                grid[startpos[0] + 1][startpos[1]] = '.'
-            elif grid[startpos[0] - 1][startpos[1]] == '[' or grid[startpos[0] - 1][startpos[1]] == ']':
+        elif dir == '^' and [(spx) - 1, spy] not in boundary:
+            if G[spx - 1][spy] == '.':
+                spx,spy = spx - 1, spy
+                G[spx][spy] = '@'
+                G[spx + 1][spy] = '.'
+            elif G[spx - 1][spy] == '[' or G[spx - 1][spy] == ']':
                 target = deque()
                 nextTarget = deque()
                 stopMove = False
                 placestomove = set()
+                placestomoveHalf = set()
+                placesnottomovehalf = set()
                 spaceforstart = []
-                if grid[startpos[0] - 1][startpos[1]] == '[':
-                    target.append([[startpos[0] - 1, startpos[1]], [startpos[0] - 1, startpos[1] + 1]])
-                    spaceforstart.append([startpos[0]-1, startpos[1]+1])
-                elif grid[startpos[0] - 1][startpos[1]] == ']':
-                    target.append([[startpos[0] - 1, startpos[1] - 1], [startpos[0] - 1, startpos[1]]])
-                    spaceforstart.append([startpos[0]-1, startpos[1] - 1])
-                for i in range(startpos[0] - 2, 0, -1):
+                allTargets = []
+                if G[spx - 1][spy] == '[':
+                    target.append([[spx - 1, spy], [spx - 1, spy + 1]])
+                    spaceforstart.append([spx-1, spy+1])
+                    allTargets.append([[spx - 1, spy], [spx - 1, spy + 1]])
+                elif G[spx - 1][spy] == ']':
+                    target.append([[spx - 1, spy - 1], [spx - 1, spy]])
+                    allTargets.append([[spx - 1, spy - 1], [spx - 1, spy]])
+                    spaceforstart.append([spx-1, spy - 1])
+                for i in range(spx - 2, 0, -1):
                     if stopMove:
                         break
 
                     nextTarget = deque()
                     while target:
                         targets = target.popleft()
-                        if grid[i][targets[0][1]] == '#' or grid[i][targets[1][1]] == '#':
-                            print("cant move up with targets", targets)
+                        if G[i][targets[0][1]] == '#' or G[i][targets[1][1]] == '#':
                             stopMove = True
                             break
-                        if grid[i][targets[0][1]] == '[':
+                        if G[i][targets[0][1]] == '[':
                             nextTarget.append([[i,targets[0][1]],[i,targets[0][1]+1]])
-                        if grid[i][targets[0][1]] == ']':
+                            allTargets.append([[i,targets[0][1]],[i,targets[0][1]+1]])
+                        if G[i][targets[0][1]] == ']':
                             nextTarget.append([[i, targets[0][1]-1], [i, targets[0][1]]])
-                        if grid[i][targets[1][1]] == '[':
+                            allTargets.append([[i, targets[0][1]-1], [i, targets[0][1]]])
+                        if G[i][targets[1][1]] == '[':
                             nextTarget.append([[i, targets[1][1]], [i, targets[1][1] + 1]])
-                        if grid[i][targets[0][1]] == '.' and grid[i][targets[1][1]] == '.':
-                            print("target good to be moved", targets, (i, targets[0][1]))
+                            allTargets.append([[i, targets[1][1]], [i, targets[1][1] + 1]])
+                        if G[i][targets[0][1]] == '.' and G[i][targets[1][1]] == '.':
+
                             placestomove.add((i, targets[0][1]))
+                        elif G[i][targets[0][1]] == '.':
+
+                            placestomoveHalf.add((i, targets[0][1]))
+                        elif G[i][targets[1][1]] == '.':
+
+                            placestomoveHalf.add((i, targets[1][1]))
                     target = nextTarget
 
-                print("moving these targets up", placestomove)
-                if not stopMove:
-                    for px,py in placestomove:
-                        for j in range(px,startpos[0]-1):
-                            if grid[j][py] == '#' or grid[j][py+1] == '#' :
-                                break
-                            if grid[j+1][py] != '.' :
-                                grid[j][py] = grid[j+1][py]
-                            if grid[j+1][py+1] != '.':
-                                grid[j][py+1] = grid[j+1][py+1]
+                if not stopMove and not target:
+                    seen = set()
+                    deduplicated_list = [x for x in allTargets if not (tuple(map(tuple, x)) in seen or seen.add(tuple(map(tuple, x))))]
+                    for [a, b], [c, d] in reversed(deduplicated_list):
 
-
-                    startpos = (startpos[0] - 1, (startpos[1]))
-                    grid[startpos[0]][startpos[1]] = '@'
-                    grid[spaceforstart[0][0]][spaceforstart[0][1]] = '.'
+                        da, db, dc, dd = a - 1, b, c - 1, d
+                        G[da][db] = G[a][b]
+                        G[dc][dd] = G[c][d]
+                        G[a][b] = '.'
+                        G[c][d] = '.'
+                    spx, spy = spx - 1, spy
+                    G[spaceforstart[0][0]][spaceforstart[0][1]] = '.'
 
 
 
-        elif dir == 'v' and [startpos[0] + 1, (startpos[1])] not in boundary:
-            if grid[startpos[0] + 1][startpos[1]] == '.':
-                print("moving d")
-                startpos = (startpos[0] + 1, startpos[1])
-                grid[startpos[0]][startpos[1]] = '@'
-                grid[startpos[0] - 1][startpos[1]] = '.'
-            elif grid[startpos[0] + 1][startpos[1]] == '[' or grid[startpos[0] + 1][startpos[1]] == ']':
+
+        elif dir == 'v' and [spx + 1, (spy)] not in boundary:
+            if G[spx + 1][spy] == '.':
+                spx,spy = spx + 1, spy
+                G[spx][spy] = '@'
+                G[spx - 1][spy] = '.'
+            elif G[spx + 1][spy] == '[' or G[spx + 1][spy] == ']':
                 target = deque()
-                nextTarget = deque()
                 stopMove = False
                 placestomove = set()
+                placestomoveHalf = set()
+                placesnottomovehalf = set()
+                allTargets = []
                 spaceforstart = []
-                if grid[startpos[0] + 1][startpos[1]] == '[':
-                    target.append([[startpos[0] + 1, startpos[1]], [startpos[0] + 1, startpos[1] + 1]])
-                    spaceforstart.append([startpos[0] + 1, startpos[1] + 1])
-                elif grid[startpos[0] + 1][startpos[1]] == ']':
-                    target.append([[startpos[0] + 1, startpos[1] - 1], [startpos[0] + 1, startpos[1]]])
-                    spaceforstart.append([startpos[0] + 1, startpos[1] - 1])
-                for i in range(startpos[0] + 2, len(grid)):
+                if G[spx + 1][spy] == '[' and G[spx + 1][spy + 1] == ']':
+                    target.append([[spx + 1, spy], [spx + 1, spy + 1]])
+                    spaceforstart.append([spx + 1, spy + 1])
+                    allTargets.append([[spx + 1, spy], [spx + 1, spy + 1]])
+                elif G[spx + 1][spy] == ']':
+                    target.append([[spx + 1, spy - 1], [spx + 1, spy]])
+                    spaceforstart.append([spx + 1, spy - 1])
+                    allTargets.append([[spx + 1, spy - 1], [spx + 1, spy]])
+                for i in range(spx + 2, len(G)):
                     if stopMove:
                         break
-
                     nextTarget = deque()
                     while target:
                         targets = target.popleft()
-                        if grid[i][targets[0][1]] == '#' or grid[i][targets[1][1]] == '#':
-                            print("cant move d with targets", targets)
+                        if G[i][targets[0][1]] == '#' or G[i][targets[1][1]] == '#':
                             stopMove = True
                             break
-                        if grid[i][targets[0][1]] == '[':
+                        if G[i][targets[0][1]] == '[':
                             nextTarget.append([[i, targets[0][1]], [i, targets[0][1] + 1]])
-                        if grid[i][targets[0][1]] == ']':
+                            allTargets.append([[i, targets[0][1]], [i, targets[0][1] + 1]])
+                        if G[i][targets[0][1]] == ']':
                             nextTarget.append([[i, targets[0][1] - 1], [i, targets[0][1]]])
-                        if grid[i][targets[1][1]] == '[':
+                            allTargets.append([[i, targets[0][1] - 1], [i, targets[0][1]]])
+                        if G[i][targets[1][1]] == '[':
                             nextTarget.append([[i, targets[1][1]], [i, targets[1][1] + 1]])
-                        if grid[i][targets[0][1]] == '.' and grid[i][targets[1][1]] == '.':
-                            print("target good to be moved d", targets, (i, targets[0][1]))
+                            allTargets.append([[i, targets[1][1]], [i, targets[1][1] + 1]])
+                        if G[i][targets[0][1]] == '.' and G[i][targets[1][1]] == '.':
                             placestomove.add((i, targets[0][1]))
+                        elif G[i][targets[0][1]] == '.':
+                            placestomoveHalf.add((i, targets[0][1]))
+                        elif G[i][targets[1][1]] == '.':
+                            placestomoveHalf.add((i, targets[1][1]))
                     target = nextTarget
 
-                print("moving these targets d", placestomove)
-                if not stopMove:
-                    for px, py in placestomove:
-                        for j in range(px, startpos[0], -1):
-                            if grid[j][py] == '#' or grid[j][py + 1] == '#':
-                                break
-                            # if grid[j][py] != '.' and grid[j][py+1] != '.':
-                            grid[j][py] = grid[j - 1][py]
-                            # if grid[j][py+1] != '.':
-                            grid[j][py + 1] = grid[j - 1][py + 1]
+                if not stopMove and not target:
 
-                    startpos = (startpos[0] + 1, (startpos[1]))
-                    grid[startpos[0]][startpos[1]] = '@'
-                    grid[spaceforstart[0][0]][spaceforstart[0][1]] = '.'
+                    seen = set()
+                    deduplicated_list = [x for x in allTargets if not (tuple(map(tuple, x)) in seen or seen.add(tuple(map(tuple, x))))]
+                    for [a,b],[c,d] in reversed(deduplicated_list):
+                        da,db,dc,dd = a+1,b,c+1,d
+                        # if (da,db) in placestomove:
+                        G[da][db] = G[a][b]
+                        G[dc][dd] = G[c][d]
+                        G[a][b] = '.'
+                        G[c][d] = '.'
+                        # else:
+                    spx, spy = spx + 1, spy
+                    G[spaceforstart[0][0]][spaceforstart[0][1]] = '.'
+                        #
+
+
 
 
 
         else:
             print("Halalalalala")
-        grid[startpos[0]][startpos[1]] = '@'
-        # for line in grid:
+        G[spx][spy] = '@'
+        # for line in G:
         #     print("".join(line))
 
     result = 0
-    for line in grid:
+    for line in G:
         print("".join(line))
-    for y in range(len(grid)):
-        if grid[y] == []:
-            print("empty", y)
-            break
-        for x in range(len(grid[0])):
+    for y in range(len(G)):
+        for x in range(len(G[0])):
+            if G[y][x] == '[':
+                result += ((y*100) + x)
+    print (result)
 
-            if grid[y][x] == 'O':
-                # print(y,x)
-                result += ((y * 100) + (x))
-    print(result)
-
+# part1()
 part2()
