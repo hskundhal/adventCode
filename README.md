@@ -1,2 +1,2 @@
 # adventCode
-<img src="200w.gif"/>
+<img src="2024/200w.gif"/>

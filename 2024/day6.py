@@ -6,7 +6,7 @@ from time import sleep
 import concurrent.futures
 
 def part1():
-    lines = open( 'input6.txt').read().splitlines()
+    lines = open('input6.txt').read().splitlines()
     # print( lines)
     rows = len(lines)
     columns = len(lines[0])
