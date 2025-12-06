@@ -1,6 +1,8 @@
-file = open ("input2.txt","r")
+
 def part1():
     sumInvalidIDs = 0
+    with open("input2.txt", "r") as f:
+        file = f.readlines()
     for line in file:
         idranges = line.split(',')
 
@@ -27,6 +29,8 @@ def part1():
 
 def part2():
     sumInvalidIDs = 0
+    with open("input2.txt", "r") as f:
+        file = f.readlines()
     for line in file:
         idranges = line.split(',')
 
@@ -144,7 +148,7 @@ def part2():
     # part 1
     print(sumInvalidIDs)
 
-# part1()
+part1()
 part2()
 
 
