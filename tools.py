@@ -7,7 +7,7 @@ def create_advent_files():
     and inputX.txt files in the current directory.
     """
     try:
-
+        folder_name = "2025"
         day_input = input("Enter the Advent of Code day number (e.g., 5): ")
         day_num = int(day_input)
 
@@ -17,21 +17,28 @@ def create_advent_files():
 
 
         day_str_padded = f"{day_num:02d}"
-        py_filename = f"day{day_str_padded}.py"
-        txt_filename = f"input{day_num}.txt"
+        py_filename = os.path.join(folder_name,f"day{day_str_padded}.py")
+        txt_filename = os.path.join(folder_name,f"input{day_num}.txt")
+        input_filename = f"input{day_num}.txt"
 
         #  some boilerplate code for the Python file
         py_boilerplate = f'''
-with open("{txt_filename}", "r") as f:
-    lines = f.readlines()
+
 
 def part1():
+    with open("{input_filename}", "r") as f:
+        lines = f.readlines()
     for line in lines:
         line = line.strip()
         print(line)
 
 def part2():
-    pass
+    with open("{input_filename}", "r") as f:
+        lines = f.readlines()
+    for line in lines:
+        line = line.strip()
+        print(line)
+
 
 print("--- Part 1 ---")
 part1()
@@ -57,9 +64,7 @@ part1()
         print(f"-> Staged '{py_filename}' for commit.")
 
         subprocess.run(["git", "add", txt_filename], check=True, capture_output=True)
-        print(f"-> Staged '{txt_filename}' for commit.")
 
-        print("\nFiles are staged. Don't forget to commit your changes!")
     except ValueError:
         print("Error: Invalid input. Please enter a whole number.")
     except Exception as e:
