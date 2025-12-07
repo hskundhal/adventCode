@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-func main() {
+func (Runner) Day1() {
 	pos := 50
 	paswd := 0
 	prevpos := false
 	//quotient := 0
-	file, err := os.Open("2025/input1.txt")
+	file, err := os.Open("input1.txt")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
